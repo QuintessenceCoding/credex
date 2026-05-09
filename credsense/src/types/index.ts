@@ -1,7 +1,12 @@
+export type PricingModel = 'SEAT' | 'USAGE' | 'FLAT';
+export type AuditCategory = 'DOWNGRADE' | 'CONSOLIDATE' | 'SWITCH' | 'CREDITS' | 'OPTIMIZED';
+export type ConfidenceLevel = 'LOW' | 'MEDIUM' | 'HIGH';
+export type UseCase = 'coding' | 'writing' | 'data' | 'research' | 'mixed';
+
 export interface ToolPlan {
   name: string;
-  priceMonthly: number;
-  priceAnnual?: number;
+  priceMonthly: number; // Base price or estimated average for usage
+  pricingModel: PricingModel;
   features: string[];
 }
 
@@ -20,15 +25,24 @@ export interface UserToolInput {
 
 export interface AuditProfile {
   teamSize: number;
-  primaryUseCase: "coding" | "writing" | "data" | "research" | "mixed";
+  primaryUseCase: UseCase;
   tools: UserToolInput[];
 }
 
 export interface AuditRecommendation {
   toolId: string;
   currentSpend: number;
-  recommendedAction: "DOWNGRADE" | "SWITCH" | "CREDITS" | "OPTIMIZED";
-  targetTool?: string;
+  category: AuditCategory;
+  confidence: ConfidenceLevel;
+  targetPlan?: string; // If keeping same tool but downgrading
+  targetTool?: string; // If switching tools
   monthlySavings: number;
+  annualSavings: number;
   reasoning: string;
+}
+
+export interface AuditResult {
+  totalMonthlySavings: number;
+  totalAnnualSavings: number;
+  recommendations: AuditRecommendation[];
 }
